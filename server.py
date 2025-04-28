@@ -4,21 +4,41 @@ import threading
 host = "127.0.0.1"
 port = 8888
 
-rooms = ["main"]
+rooms = ["main", "game"]
 
 def handler(conn, addr):
     with conn: 
         print(f"connected by {addr}")
         while True:
-            sample_data = bytes([0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01])
-            conn.sendall(packet("RECEIVE_MESSAGE", sample_data))
+            data = conn.recv(4048)
+            OPCODES = {
+                0x01: "SEND_MESSAGE",
+                0x02: "RECEIVE_MESSAGE",
+                0x03: "LIST_ROOMS",
+                0x04: "JOIN_ROOM",
+                0x05: "CREATE_ROOM",
+                0x06: "SERVER_MESSAGE"
+            }
+            
+            opcode = OPCODES.get(data[1])
+            
+            if(opcode == "LIST_ROOMS"):
+                for i in rooms:
+                    binary = ''.join(format(ord(char), '08b') for char in rooms[i])
+                    create_packet("SERVER_MESSAGE", binary)             
+            # sample_data = bytes([0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01])
+           #  conn.sendall(packet("RECEIVE_MESSAGE", sample_data))
             
             
-def packet(opcode, body):
+def create_packet(opcode, body):
     version = 0x01
     OPCODES = {
         "SEND_MESSAGE": 0x01,
         "RECEIVE_MESSAGE": 0x02,
+        "LIST_ROOMS": 0x03,
+        "JOIN_ROOM": 0x04,
+        "CREATE_ROOM": 0x05,
+        "SERVER_MESSAGE": 0x06
     }
     
     opcode_bin = OPCODES.get(opcode)
@@ -27,6 +47,9 @@ def packet(opcode, body):
     header = bytes([version, opcode_bin]) + length
     packet = header + body
     return packet
+
+ 
+    
             
             
             
