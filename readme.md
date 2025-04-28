@@ -1,6 +1,12 @@
 # CLI Messenger from Scratch
 This is a simple messenger with chatrooms build nearly completly from sratch using Python build with a custom protocl based on tcp
 
+## Goal
+
+A simpel Messenger with chatrooms build to learn new stuff and deepen my knowledge
+All writen without Ai.
+
+
 ## Protocol
 
 + Version(1byte)
@@ -11,6 +17,7 @@ This is a simple messenger with chatrooms build nearly completly from sratch usi
 
 ### OPCODES
 
-+ 0x01 Send_Message
-+ 0x02 Recive_Message
-+ 0x03
++ 0x01 SEND_MESSAGE
++ 0x02 RECEIVE_MESSAGE
++ 0x03 LIST_ROOMS
++ 0x04 JOIN_ROOM
