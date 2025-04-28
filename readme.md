@@ -4,12 +4,12 @@ This is a simple messenger with chatrooms build nearly completly from sratch usi
 ## Protocol
 
 + Version(1byte)
-+ Type(1byte)
++ OPCODES(1byte)
 + Stream(1byte)
 + Leghtn (2byte)
 + Body (Variable)
 
-### Type
+### OPCODES
 
 + 0x01 Send_Message
 + 0x02 Recive_Message
