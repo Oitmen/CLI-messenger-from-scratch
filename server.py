@@ -1,15 +1,17 @@
 import socket
 import threading
-from protocol import create_packet
+from protocol import create_packet, get_body
 host = "127.0.0.1"
 port = 8888
 
-rooms = ["main", "game"]
+rooms = {"main": [], "game": []}
+
 
 def handler(conn, addr):
     try:
         with conn: 
             print(f"connected by {addr}")
+            print(conn)
             while True:
                 data = conn.recv(4048)
                 OPCODES = {
@@ -25,20 +27,25 @@ def handler(conn, addr):
                 
                 if opcode == "LIST_ROOMS":
                     print("Requested list of Rooms")
-                    for i in range(len(rooms)):
-                        print(rooms[i])
+                    room_names = list(rooms.keys())
+                    for i, room in enumerate(room_names):
+                        print(room)
+                        flag = 0x00
                         if i == 0:
-                            conn.sendall(create_packet("SERVER_MESSAGE", 0x01, 0x01, rooms[i]))
-                        elif i == len(rooms) - 1:
-                            conn.sendall(create_packet("SERVER_MESSAGE", 0x01, 0x02, rooms[i]))
-                        else:
-                            conn.sendall(create_packet("SERVER_MESSAGE", 0x01, 0x00, rooms[i]))
-    finally:
-        conn.close()
+                            flag = 0x01
+                        elif i == len(room_names) - 1:
+                            flag = 0x02
+                        conn.sendall(create_packet("SERVER_MESSAGE", 0x01, flag, room))
+                elif (opcode == "JOIN_ROOM"):
+                    rooms[get_body(data)].append(addr)
+                    print(rooms)
                     
-
-    
-            
+                    
+    finally:
+        for room in rooms.values():
+            if addr in room:
+                room.remove(addr)
+        conn.close()
             
             
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

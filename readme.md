@@ -27,7 +27,7 @@ All writen without Ai.
 
 ### Stream
 
-+0x01 LIST_ROOM
++0x01 SYSTEM
 +0x02-0x09 Reserverd for futur special Rooms
 +0x0A-0xFF ID of room
 
