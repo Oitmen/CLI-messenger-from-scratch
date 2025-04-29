@@ -6,6 +6,14 @@ port = 8888
 
 rooms = {"main": [], "game": []}
 
+def broadcast(room):
+    for conn_list in rooms.values():
+        for conn in conn_list:
+            print(conn)
+            conn.sendall(create_packet("RECEIVE_MESSAGE", 0x0A, 0x03, "Welcome"))
+    
+    
+
 
 def handler(conn, addr):
     try:
@@ -37,14 +45,14 @@ def handler(conn, addr):
                             flag = 0x02
                         conn.sendall(create_packet("SERVER_MESSAGE", 0x01, flag, room))
                 elif (opcode == "JOIN_ROOM"):
-                    rooms[get_body(data)].append(addr)
-                    print(rooms)
+                    rooms[get_body(data)].append(conn)
+                    broadcast(get_body(data))
                     
                     
     finally:
         for room in rooms.values():
-            if addr in room:
-                room.remove(addr)
+            if conn in room:
+                room.remove(conn)
         conn.close()
             
             

@@ -17,6 +17,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print(get_body(data))
     uinputr = input("Which Room do you want to Join?")
     s.sendall(create_packet("JOIN_ROOM",0x01,0x03,uinputr))
+    data = s.recv(1024)
+    print(data)
     
     
         
