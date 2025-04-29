@@ -23,14 +23,17 @@ def handler(conn, addr):
             opcode = OPCODES.get(data[1])
             
             if(opcode == "LIST_ROOMS"):
-                for i in rooms:
-                    binary = ''.join(format(ord(char), '08b') for char in rooms[i])
-                    create_packet("SERVER_MESSAGE", binary)             
+                print("Requested list of Rooms")
+                for room in rooms:
+                    print(room)
+                    conn.sendall(create_packet("SERVER_MESSAGE", room))             
             # sample_data = bytes([0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01])
            #  conn.sendall(packet("RECEIVE_MESSAGE", sample_data))
             
             
 def create_packet(opcode, body):
+    body_binary = ''.join(format(ord(char), '08b') for char in body)
+    
     version = 0x01
     OPCODES = {
         "SEND_MESSAGE": 0x01,
@@ -45,7 +48,7 @@ def create_packet(opcode, body):
     length = len(body).to_bytes(2, "big")
     
     header = bytes([version, opcode_bin]) + length
-    packet = header + body
+    packet = header + body.encode('utf-8')
     return packet
 
  
