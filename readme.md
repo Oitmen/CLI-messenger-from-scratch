@@ -12,6 +12,7 @@ All writen without Ai.
 + Version(1byte)
 + OPCODES(1byte)
 + Stream(1byte)
++ Flag(1byte)
 + Leghtn (2byte)
 + Body (Variable)
 
@@ -23,3 +24,14 @@ All writen without Ai.
 + 0x04 JOIN_ROOM
 + 0x05 CREATE_ROOM
 + 0x06 SERVER_MESSAGE
+
+### Stream
+
++0x01 LIST_ROOM
++0x02-0x09 Reserverd for futur special Rooms
++0x0A-0xFF ID of room
+
+### Flags
++ 0x01 START_OF_STREAM
++ 0x02 END_OF_STREAM
++ 0x03 SINGLE
