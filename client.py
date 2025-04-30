@@ -1,10 +1,16 @@
 import socket
+import threading
 from protocol import create_packet, get_body
 
 HOST = "127.0.0.1"  
 PORT = 8888
 
 
+def receive(sock):
+    while True:
+        data = s.recv(1024)
+        print(get_body(data))
+    
             
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -17,8 +23,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print(get_body(data))
     uinputr = input("Which Room do you want to Join?")
     s.sendall(create_packet("JOIN_ROOM",0x01,0x03,uinputr))
-    data = s.recv(1024)
-    print(data)
-    
+    threading.Thread(target=receive, args=(s,), daemon=True).start()
+    while True:
+        message = input().strip()
+        s.sendall(create_packet("SEND_MESSAGE", 0x0A, 0x03, message))
+
     
         
+     
