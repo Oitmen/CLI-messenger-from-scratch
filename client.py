@@ -23,10 +23,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print(get_body(data))
     uinputr = input("Which Room do you want to Join?")
     s.sendall(create_packet("JOIN_ROOM",0x01,0x03,uinputr))
+    current_room = int(get_body((s.recv(1024))))
     threading.Thread(target=receive, args=(s,), daemon=True).start()
     while True:
         message = input().strip()
-        s.sendall(create_packet("SEND_MESSAGE", 0x0A, 0x03, message))
+        s.sendall(create_packet("SEND_MESSAGE", current_room, 0x03, message))
 
     
         
